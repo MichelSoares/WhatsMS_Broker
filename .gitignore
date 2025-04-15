@@ -1,0 +1,76 @@
+# === .NET (.csproj, bin/obj, etc) ===
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/*.user
+**/*.suo
+**/*.cache
+**/*.ide
+**/*.dbmdl
+**/*.log
+**/*.ncb
+**/*.VC.db
+**/*.vspscc
+**/*.vssscc
+**/*.pdb
+**/*.mdb
+**/*.pidb
+
+# Visual Studio & Rider
+.vs/
+.idea/
+
+# NuGet
+**/packages/
+*.nupkg
+
+# EF Migrations snapshot
+**/Migrations/*Snapshot.cs
+
+# Publish output
+publish/
+
+# User secrets
+secrets.json
+
+# Local config
+appsettings.Development.json
+
+# === Node.js ===
+/WhatsMS_Broker_Node/node_modules/
+/WhatsMS_Broker_Node/.env
+/WhatsMS_Broker_Node/package-lock.json # (opcional ignorar se não quiser travar versões)
+ 
+/WhatsMS_Broker_Node/dist/
+/WhatsMS_Broker_Node/build/
+/WhatsMS_Broker_Node/logs/
+
+/WhatsMS_Broker_Node/.wwebjs_auth/
+/WhatsMS_Broker_Node/src/sessions/
+
+
+# === Logs ===
+*.log
+logs/
+
+# === OS/Editor Junk ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+
+# === Global ===
+.env
+.env.*
+*.bak
+*.old
+*.orig
+*.rej
+
+# === Git ===
+*.orig
+*.patch
+*.rej
+*.diff
