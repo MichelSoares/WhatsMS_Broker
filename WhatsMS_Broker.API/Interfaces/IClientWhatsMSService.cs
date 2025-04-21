@@ -5,5 +5,7 @@ namespace WhatsMS_Broker.API.Interfaces
     public interface IClientWhatsMSService
     {
         Task<AccountMSStatusDTO?> CheckStatusByPhoneNumberAsync(string phoneNumber);
+        Task<int> CheckPhoneNumberExists(string phoneNumber);
+        Task<bool> CheckUptimeGenerateQRCode(string phoneNumber);
     }
 }

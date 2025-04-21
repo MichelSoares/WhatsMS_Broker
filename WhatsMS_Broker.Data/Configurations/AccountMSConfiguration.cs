@@ -30,7 +30,6 @@ namespace WhatsMS_Broker.Data.Configurations
 
             builder.Property(x => x.SessionName)
                    .HasColumnName("session_name")
-                   .IsRequired()
                    .HasMaxLength(50);
 
             builder.Property(x => x.WebhookUrl)
@@ -51,11 +50,11 @@ namespace WhatsMS_Broker.Data.Configurations
 
             builder.Property(x => x.IsActive)
                    .HasColumnName("is_active")
+                   .HasDefaultValue(false)
                    .IsRequired();
 
             builder.Property(x => x.ClientSessionID)
-                  .HasColumnName("client_session_id")
-                  .IsRequired();
+                  .HasColumnName("client_session_id");
 
             builder.Property(x => x.CreatedAt)
                    .HasColumnName("created_at")

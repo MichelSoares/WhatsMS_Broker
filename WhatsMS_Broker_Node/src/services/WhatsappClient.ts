@@ -67,8 +67,8 @@ async function connectWpp(forceNewSession = false) {
 
       await Restore_Session(client_id_db);
 
-
     } else {
+      
       logger.info('NÃO EXISTE SESSÃO PARA RECUPERAR - criando nova sessão client ID');
       logger.info('DELETANDO DADOS DE SESSÕES INATIVAS...');
       await deletarFileSession(SESSION_FILE_PATH);
@@ -124,7 +124,7 @@ export const sendMessageToWhatsApp = async (phoneNumber: string, message: string
   if (!client) {
     throw new Error('Cliente WhatsApp não inicializado!');
   }
-  // WhatsApp espera o número com DDI + DDD + número, e sufixo @c.us
+  // WhatsApp aqui esperará o num -> (DDI + DDD + número) +  @c.us
   const chatId = `${phoneNumber}@c.us`;
 
   return client.sendMessage(chatId, message);

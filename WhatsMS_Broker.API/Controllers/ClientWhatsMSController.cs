@@ -34,5 +34,31 @@ namespace WhatsMS_Broker.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("check-phonenumber-exists")]
+        public async Task<IActionResult> CheckPhoneNumberExists([FromQuery] string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                throw new ArgumentNullException("informe o número do telefone da instancia client Node!");
+            }
+
+            var count = await _clientWhatsMSService.CheckPhoneNumberExists(phoneNumber);
+            return Ok(count);
+        }
+
+        [HttpGet]
+        [Route("check-uptime-qrcode")]
+        public async Task<IActionResult> CheckUptimeGenerateQRCode([FromQuery] string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+                return BadRequest("Informe o número de telefone");
+
+            var result = await _clientWhatsMSService.CheckUptimeGenerateQRCode(phoneNumber);
+
+            return Ok(new { result });
+
+        }
+
     }
 }

@@ -25,5 +25,16 @@ namespace WhatsMS_Broker.API.Services
                     is_active = a.IsActive
                 }).FirstOrDefaultAsync();
         }
+
+        public async Task<int> CheckPhoneNumberExists(string phoneNumber)
+        {
+            return await _brokerDbContext.Accounts
+                .CountAsync(a => a.PhoneNumber == phoneNumber);
+        }
+
+        public async Task<bool> CheckUptimeGenerateQRCode(string phoneNumber)
+        {
+            return await _brokerDbContext.Accounts.AnyAsync(a => a.PhoneNumber == phoneNumber && a.UpdatedAt > DateTime.UtcNow.AddMinutes(-1));
+        }
     }
 }
