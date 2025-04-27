@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WhatsMS_Broker.API.DTOs.Request;
 using WhatsMS_Broker.API.Interfaces;
 using WhatsMS_Broker.API.Services;
 using WhatsMS_Broker.Data.Context;
@@ -54,11 +55,70 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            var result = await _clientWhatsMSService.CheckUptimeGenerateQRCode(phoneNumber);
+            var genQrcode = await _clientWhatsMSService.CheckUptimeGenerateQRCode(phoneNumber);
 
-            return Ok(new { result });
+            return Ok(new { genQrcode });
 
         }
+
+        [HttpPut]
+        [Route("{phoneNumber}/qrcode")]
+        public async Task<IActionResult> SetNewQRCode(string phoneNumber, [FromBody] UpdateQRCodeDTO updateQRCodeDTO)
+        {
+            if (updateQRCodeDTO == null)
+                return BadRequest("Informe os dados do client Node!");
+
+            await _clientWhatsMSService.NewInstanceClientNode(phoneNumber, updateQRCodeDTO);
+            return Ok("Dados atualizados com sucesso.");
+        }
+
+        [HttpPut]
+        [Route("{phoneNumber}/reset-qrcode")]
+        public async Task<IActionResult> ResetQRCode(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+                return BadRequest("Informe o número de telefone");
+
+            await _clientWhatsMSService.ResetQRCode(phoneNumber);
+            return Ok("Reset ok.");
+        }
+
+        [HttpPut]
+        [Route("{phoneNumber}/{sessionId}/new-session")]
+        public async Task<IActionResult> NewSessionId(string phoneNumber, string sessionId)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+                return BadRequest("Informe o número de telefone");
+
+            await _clientWhatsMSService.NewSessionId(phoneNumber, sessionId);
+            return Ok("nova sessionId ok");
+
+        }
+
+        [HttpPut]
+        [Route("{phoneNumber}/set-uptime-generate-qrcode")]
+        public async Task<IActionResult> SetUptimeGenQRCode(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+                return BadRequest("Informe o número de telefone");
+
+            await _clientWhatsMSService.SetUptimeGenerateQrcode(phoneNumber);
+            return Ok("set uptime ok");
+
+        }
+
+        [HttpPut]
+        [Route("{phoneNumber}/set-auth")]
+        public async Task<IActionResult> SetAuthenticatedPhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+                return BadRequest("Informe o número de telefone");
+
+            await _clientWhatsMSService.SetAuthenticatedPhoneNumber(phoneNumber);
+            return Ok("set auth");
+
+        }
+
 
     }
 }

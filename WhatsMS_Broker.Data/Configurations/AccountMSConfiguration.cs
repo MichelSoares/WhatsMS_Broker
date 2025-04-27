@@ -44,10 +44,6 @@ namespace WhatsMS_Broker.Data.Configurations
                    .HasColumnName("port_run")
                    .HasMaxLength(10);
 
-            builder.Property(x => x.QrCodeBase64)
-                   .HasColumnName("qrcode_base64")
-                   .HasColumnType("text");
-
             builder.Property(x => x.IsActive)
                    .HasColumnName("is_active")
                    .HasDefaultValue(false)
@@ -65,6 +61,10 @@ namespace WhatsMS_Broker.Data.Configurations
                    .HasColumnName("updated_at")
                    .IsRequired()
                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            builder.Property(x => x.QrCodeBase64)
+                  .HasColumnName("qrcode_base64")
+                  .HasColumnType("text");
         }
     }
 }

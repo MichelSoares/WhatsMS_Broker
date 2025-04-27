@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Request\" />
     <Folder Include="Utils\" />
   </ItemGroup>
 

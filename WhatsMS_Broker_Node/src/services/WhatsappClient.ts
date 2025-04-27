@@ -3,13 +3,23 @@ import qrcode from 'qrcode-terminal';
 import logger from '../utils/logger';
 import { RequestAPIBroker } from './RequestAPIBroker';
 import path from 'path';
-const doRequetBrokerAPI = new RequestAPIBroker(process.env.URL_BASE_API_BROKER || '');
-const os = require('os');
+import { QRCode } from '../types/Entities/QRCode';
+
+const sender = process.env.PHONE_NUMBER;
+const baseUrlAPI = process.env.URL_BASE_API_BROKER;
+const portApp = process.env.PORT;
+
+const doRequetBrokerAPI = new RequestAPIBroker(baseUrlAPI || '');
+const qrcode_url = require('qrcode');
+//const os = require('os');
 const fs = require('fs').promises;
 
 let client: Client;
+let sessionData: any;
+let isAuth: boolean;
+let isConnecting = false;
+
 const SESSION_FILE_PATH = path.join(__dirname, '..', 'sessions');
-logger.info(`DIRETORIO sessões ${SESSION_FILE_PATH}`);
 
 const argsPuppeteer = 
 [ 
@@ -23,76 +33,190 @@ const argsPuppeteer =
   '--disable-gpu'
 ];
 
-export const initializeWhatsAppClient = () => {
-  /*client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: {
-      headless: true,
-      args: argsPuppeteer,
-    },
-  });*/
-
-  logger.info('Inicializando Cliente');
-
+const initializeWhatsAppClient = () => {
   client.on('qr', (qr) => {
-    qrcode.generate(qr, { small: true });
-    logger.info('[QR Code] Escaneie o código acima para logar no WhatsApp Web.');
+    qrcode_url.toDataURL(qr).then(async (url: string) => {
+      let qrcode_b64 = url.split(',');
+      if(qrcode_b64[1] != null){
+        try{
+
+          let hasQRCode = false;
+          let numberExists = await doRequetBrokerAPI.requestAPI('GET', 'ClientWhatsMS/check-phonenumber-exists/', undefined, { params: { phoneNumber: sender } });
+
+          if(numberExists === 1){
+            let startUp = await doRequetBrokerAPI.requestAPI('GET', 'ClientWhatsMS/check-uptime-qrcode/', undefined, { params: { phoneNumber: sender } });
+            if(startUp.genQrcode){
+              logger.info('[QR Code] - GERANDO/ATUALIZANDO');
+              qrcode.generate(qr, { small: true });
+              logger.info('[QR Code] Escaneie o código acima para logar no WhatsApp Web.');
+
+              if (!portApp || !sender) {
+                throw new Error('Variáveis de ambiente não definidas');
+              }
+
+              const qrcodeJ: QRCode = {
+                qrcode_b64: qrcode_b64[1],
+                porta: portApp!,
+                phoneNumber: sender!
+              }
+
+              await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${sender}/qrcode`,
+                  {
+                    QRCode: qrcodeJ.qrcode_b64,
+                    Port: qrcodeJ.porta
+                  });
+              hasQRCode = true;
+
+            } 
+            else {
+              logger.warn('Updated_At acima de 1 minuto. QR Code não será gerado! aguardando nova solicitação!');
+              if(hasQRCode){
+                await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${sender}/reset-qrcode`);
+                hasQRCode = false;
+              }
+            }
+            
+          }
+          else {
+            logger.warn(`Nenhum row correspondente, para o número: +${sender} . QR Code não gerado, Finalizando programa!`);
+            process.exit(1);
+          }
+
+        } catch(e){
+          logger.error(e);
+        }
+      }  
+    });
+ 
   });
 
-  client.on('ready', () => {
-    logger.info('[WhatsApp] Cliente pronto!');
+  client.on('authenticated', async (session) => {
+    sessionData = session;
+    isAuth = true;
   });
+
+  client.on('auth_failure', async (msg) => {
+    logger.error('Erro autenticação', msg);
+    await deletarFileSession(SESSION_FILE_PATH)
+
+    setTimeout(() => {
+      connectWpp()
+    }, 3000)
+  });
+
+  client.on('disconnected', async (reason) => {
+    if (isAuth) {
+      try {
+        sessionData = null;
+        await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${client.info.wid.user}/reset-qrcode`);
+        logger.info('Cliente desconectou, número: ' + client.info.wid.user);
+        logger.info('Motivo desconexão: ' + reason);
+        await resetClient();
+        //await deletarFileSession(SESSION_FILE_PATH);
+        setTimeout(() => {
+          connectWpp()
+        }, 3000)
+
+      } catch (error) {
+        logger.info('Erro em terminar a sessão %s', error)
+      }
+    } else {
+      logger.info('Por favor autentique-se com o número pré-cadastrado. Solicitando autenticação novamente...')
+    }
+  });
+
+  client.on('message_ack', async (message, ack) => {
+
+  });
+
+  client.on('ready', async () => {
+    if (isAuth && `${client.info.wid.user}` === `${sender}`) { 
+        logger.info('Versão WhatsApp Web: ' + await client.getWWebVersion());
+        logger.info('Profile Name cliente: ' + client.info.pushname);
+        await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${client.info.wid.user}/set-auth`);
+    } else {
+        logger.info('Tentativa de login com número não autorizado. Desconectando...');
+        await deletarFileSession(SESSION_FILE_PATH);
+        setTimeout(() => {
+            client.logout();
+            isAuth = false;
+            connectWpp();
+        }, 3000);
+    }
+    logger.info('[WhatsApp] Cliente pronto!');
+});
 
   client.on('message', (message) => {
     logger.info(`[Mensagem recebida] ${message.from}: ${message.body}`);
   });
 
   client.initialize();
+  logger.info('Inicializando Cliente...');
 };
 
-async function connectWpp(forceNewSession = false) {
-  
-  try{
-    
-    let sessionData = null;
-    let ret = await doRequetBrokerAPI.requestAPI('GET', 'ClientWhatsMS/check-status/', undefined, {
-      params: { phoneNumber: process.env.PHONE_NUMBER }
-    });
-    
-    if(ret.is_active && ret.client_session_id != null && forceNewSession == false){
-      let client_id_db = ret.client_session_id;
-      logger.info('RECUPERANDO SESSÃO...');
-      logger.info('VERIFICANDO SE SESSÃO ESTÁ AUTENTICADA: ' + ret.is_active);
-      logger.info(`CLIENTE: ${process.env.NUMERO_CLIENTE} tem sessão ATIVA! RECUPERANDO SESSÃO - session-${client_id_db}`);
+export async function connectWpp(forceNewSession = false) {
+  if (isConnecting) {
+    logger.warn('Já existe uma conexão em andamento. Ignorando novo connectWpp.');
+    return;
+  }
 
+  isConnecting = true;
+  try {
+    logger.info(`DIRETORIO sessões -> ${SESSION_FILE_PATH}`);
+
+    let ret = await doRequetBrokerAPI.requestAPI('GET', 'ClientWhatsMS/check-status/', undefined, {
+      params: { phoneNumber: sender }
+    });
+
+    if (ret.is_active && ret.client_session_id != null && !forceNewSession) {
+      let client_id_db = ret.client_session_id;
+      logger.info(`VERIFICANDO SE SESSÃO ESTÁ AUTENTICADA: ${ret.is_active}`);
+      logger.info('RECUPERANDO SESSÃO...');
+      logger.info(`CLIENTE: ${sender} tem sessão ATIVA! RECUPERANDO SESSÃO - session-${client_id_db}`);
       await Restore_Session(client_id_db);
 
     } else {
-      
       logger.info('NÃO EXISTE SESSÃO PARA RECUPERAR - criando nova sessão client ID');
       logger.info('DELETANDO DADOS DE SESSÕES INATIVAS...');
+      
       await deletarFileSession(SESSION_FILE_PATH);
-      let client_new_session = "client-"+ Math.floor(Math.random() * 1000)
-        client = new Client({
-          takeoverOnConflict: true,
-          takeoverTimeoutMs:  0,
-          webVersion: '2.2408.1',
-          webVersionCache:  { type: "local" },
-          puppeteer: { headless: true, args: argsPuppeteer },
-          authStrategy: new LocalAuth({dataPath: SESSION_FILE_PATH, clientId: client_new_session}),
-          //session: sessionData
-        });
+      await resetClient();
+    
+      let client_new_session = "client-" + Math.floor(Math.random() * 1000);
+      logger.info(`NOVA SESSÃO CLIENT ID: ${client_new_session}`);
+      
+      client = new Client({
+        takeoverOnConflict: true,
+        takeoverTimeoutMs: 0,
+        webVersion: '2.2408.1',
+        webVersionCache: { type: "local" },
+        puppeteer: { headless: true, args: argsPuppeteer },
+        authStrategy: new LocalAuth({ dataPath: SESSION_FILE_PATH, clientId: client_new_session }),
+        session: sessionData
+      });
+
+      await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${sender}/${client_new_session}/new-session`);
     }
 
-    logger.info(`DIRETÓRIO SESSÃO: ${SESSION_FILE_PATH}`);
     initializeWhatsAppClient();
 
-  } catch(e){
-
+  } catch (e) {
+    logger.error('Erro no connectWpp:', e);
+  } finally {
+    isConnecting = false;
   }
 }
 
-connectWpp(true);
+async function resetClient() {
+  if (client) {
+    try {
+      await client.destroy();
+      client.removeAllListeners();
+    } catch (error) {
+      logger.error('Erro ao resetar o cliente:', error);
+    }
+  }
+}
 
 async function Restore_Session(client_id : string){
   client = new Client({
@@ -124,7 +248,7 @@ export const sendMessageToWhatsApp = async (phoneNumber: string, message: string
   if (!client) {
     throw new Error('Cliente WhatsApp não inicializado!');
   }
-  // WhatsApp aqui esperará o num -> (DDI + DDD + número) +  @c.us
+  // WhatsApp aqui vou esperar o num no formato -> (DDI + DDD + número) +  @c.us
   const chatId = `${phoneNumber}@c.us`;
 
   return client.sendMessage(chatId, message);

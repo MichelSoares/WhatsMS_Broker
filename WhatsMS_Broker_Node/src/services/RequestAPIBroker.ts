@@ -24,7 +24,7 @@ export class RequestAPIBroker {
   ): Promise<TResponse | null> {
     try {
       const url = this.client.defaults.baseURL + endpoint;  
-      logger.info(`Request URL: [${method}] - ${url}`); 
+      logger.info(`Request URL:\t [${method}] - ${url}`); 
   
       const response = await this.client.request<TResponse>({
         method,
@@ -33,7 +33,7 @@ export class RequestAPIBroker {
         ...config,
       });
 
-      logger.info(`Response: ${JSON.stringify(response.data)}`);
+      //logger.info(`Response: ${JSON.stringify(response.data)}`);
 
       return response.data;
     } catch (error: any) {

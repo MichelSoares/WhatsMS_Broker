@@ -47,6 +47,7 @@ appsettings.Development.json
 /WhatsMS_Broker_Node/logs/
 
 /WhatsMS_Broker_Node/.wwebjs_auth/
+/WhatsMS_Broker_Node/.wwebjs_cache/
 /WhatsMS_Broker_Node/src/sessions/
 
 

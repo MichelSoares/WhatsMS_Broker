@@ -13,17 +13,16 @@ namespace WhatsMS_Broker.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<MessageInbound> builder)
         {
-            builder.ToTable("tb_message_inbound"); // Nome da tabela no banco
+            builder.ToTable("tb_message_inbound");
 
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName("id");
 
             // Relacionamento com AccountMS (associando AccountId com a chave primária de AccountMS)
             builder.HasOne(x => x.Account)
-                   .WithMany() // Supondo que AccountMS pode ter muitos MessageInbounds
+                   .WithMany() 
                    .HasForeignKey(x => x.AccountId)
-                   .OnDelete(DeleteBehavior.Restrict); // Restrição de exclusão caso a conta seja excluída
-
+                   .OnDelete(DeleteBehavior.Restrict); 
             builder.Property(x => x.FromNumber)
                    .HasColumnName("from_number")
                    .IsRequired()
