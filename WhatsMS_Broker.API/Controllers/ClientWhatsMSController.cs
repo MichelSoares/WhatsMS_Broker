@@ -31,7 +31,6 @@ namespace WhatsMS_Broker.API.Controllers
 
             var result = await _clientWhatsMSService.CheckStatusByPhoneNumberAsync(phoneNumber);
             if (result == null) return NotFound();
-
             return Ok(result);
         }
 

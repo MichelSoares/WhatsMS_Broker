@@ -1,9 +1,12 @@
 import { Client, LocalAuth } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import logger from '../utils/logger';
-import { RequestAPIBroker } from './RequestAPIBroker';
 import path from 'path';
+import { RequestAPIBroker } from './RequestAPIBroker';
 import { QRCode } from '../types/Entities/QRCode';
+import { MessageInboundDTO } from '../types/DTOs/Request/MessageInboundDTO';
+import { AccountWhatsMSDTO } from '../types/DTOs/Response/AccountWhatsMSDTO';
+import { Helper } from '../utils/Helper';
 
 const sender = process.env.PHONE_NUMBER;
 const baseUrlAPI = process.env.URL_BASE_API_BROKER;
@@ -13,7 +16,8 @@ const doRequetBrokerAPI = new RequestAPIBroker(baseUrlAPI || '');
 const qrcode_url = require('qrcode');
 //const os = require('os');
 const fs = require('fs').promises;
-
+//const clientWhatsMS: object;
+let accountWhatsMS: AccountWhatsMSDTO | null;;
 let client: Client;
 let sessionData: any;
 let isAuth: boolean;
@@ -146,8 +150,29 @@ const initializeWhatsAppClient = () => {
     logger.info('[WhatsApp] Cliente pronto!');
 });
 
-  client.on('message', (message) => {
+  client.on('message', async (message) => {
     logger.info(`[Mensagem recebida] ${message.from}: ${message.body}`);
+    
+    logger.info(`obj integro evento message Whats: ${JSON.stringify(message)}`);
+
+    if(!accountWhatsMS){
+      logger.warn("CLIENT accountWhatsMS null;")
+      return;
+    }
+
+    const msgInboundDTO: MessageInboundDTO = {
+      idMessageWhatsApp: message.id.id,
+      accountId: accountWhatsMS.id,
+      fromNumber: message.from,
+      toNumber: message.to,
+      messageType: message.type,
+      content: message.body,
+      dateReceived: Helper.formatUnixToBR(message.timestamp),
+      isGroup: false
+    };
+
+    await doRequetBrokerAPI.requestAPI('POST', 'MessageInbound/MessageReceived/', msgInboundDTO);
+
   });
 
   client.initialize();
@@ -164,13 +189,18 @@ export async function connectWpp(forceNewSession = false) {
   try {
     logger.info(`DIRETORIO sessões -> ${SESSION_FILE_PATH}`);
 
-    let ret = await doRequetBrokerAPI.requestAPI('GET', 'ClientWhatsMS/check-status/', undefined, {
+    accountWhatsMS = await doRequetBrokerAPI.requestAPI<AccountWhatsMSDTO>('GET', 'ClientWhatsMS/check-status/', undefined, {
       params: { phoneNumber: sender }
     });
 
-    if (ret.is_active && ret.client_session_id != null && !forceNewSession) {
-      let client_id_db = ret.client_session_id;
-      logger.info(`VERIFICANDO SE SESSÃO ESTÁ AUTENTICADA: ${ret.is_active}`);
+    if (!accountWhatsMS) {
+      logger.warn("Retorno nulo da API. Abortando recuperação de sessão.");
+      return;
+    }
+
+    if (accountWhatsMS.is_active && accountWhatsMS.client_session_id != null && !forceNewSession) {
+      let client_id_db = accountWhatsMS.client_session_id;
+      logger.info(`VERIFICANDO SE SESSÃO ESTÁ AUTENTICADA: ${accountWhatsMS.is_active}`);
       logger.info('RECUPERANDO SESSÃO...');
       logger.info(`CLIENTE: ${sender} tem sessão ATIVA! RECUPERANDO SESSÃO - session-${client_id_db}`);
       await Restore_Session(client_id_db);

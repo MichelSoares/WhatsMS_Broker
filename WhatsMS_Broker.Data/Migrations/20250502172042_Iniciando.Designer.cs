@@ -12,8 +12,8 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250502001324_Iniciado")]
-    partial class Iniciado
+    [Migration("20250502172042_Iniciando")]
+    partial class Iniciando
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,6 +125,10 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("from_number");
+
+                    b.Property<string>("IdMessageWhatsApp")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsGroup")
                         .HasColumnType("boolean")

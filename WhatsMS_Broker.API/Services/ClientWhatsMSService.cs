@@ -21,6 +21,8 @@ namespace WhatsMS_Broker.API.Services
                 await _brokerDbContext.Accounts.Where(a => a.PhoneNumber == phoneNumber)
                 .Select(a => new AccountMSStatusDTO
                 {
+                    id = a.Id,
+                    auth_token = a.AuthToken,
                     client_session_id = a.ClientSessionID,
                     phone_number = a.PhoneNumber,
                     is_active = a.IsActive

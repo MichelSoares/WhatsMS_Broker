@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WhatsMS_Broker.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Iniciado : Migration
+    public partial class Iniciando : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,7 @@ namespace WhatsMS_Broker.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IdMessageWhatsApp = table.Column<string>(type: "text", nullable: false),
                     AccountId = table.Column<int>(type: "integer", nullable: false),
                     from_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     to_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
