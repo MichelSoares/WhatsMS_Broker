@@ -47,7 +47,7 @@ namespace WhatsMS_Broker.API.Services
                 throw new Exception("Telefone não encontrado.");
 
             account.QrCodeBase64 = newInstanceNode.QRCode;
-            account.PortRun = newInstanceNode.Port.ToString();
+            account.PortRun = newInstanceNode.Port;
             account.UpdatedAt = DateTime.UtcNow;
 
             await _brokerDbContext.SaveChangesAsync();

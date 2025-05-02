@@ -15,14 +15,15 @@ namespace WhatsMS_Broker.Data.Configurations
         {
             builder.ToTable("tb_message_inbound");
 
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("id");
+            builder.Property(x => x.Id)
+                    .HasColumnName("id")
+                    .UseIdentityColumn();
 
-            // Relacionamento com AccountMS (associando AccountId com a chave primária de AccountMS)
             builder.HasOne(x => x.Account)
                    .WithMany() 
                    .HasForeignKey(x => x.AccountId)
                    .OnDelete(DeleteBehavior.Restrict); 
+
             builder.Property(x => x.FromNumber)
                    .HasColumnName("from_number")
                    .IsRequired()
@@ -41,7 +42,7 @@ namespace WhatsMS_Broker.Data.Configurations
             builder.Property(x => x.Content)
                    .HasColumnName("content")
                    .IsRequired()
-                   .HasColumnType("text"); // Caso o conteúdo da mensagem seja grande (base64 ou texto longo)
+                   .HasColumnType("text");
 
             builder.Property(x => x.DateReceived)
                    .HasColumnName("date_received")

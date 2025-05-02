@@ -19,11 +19,11 @@ namespace WhatsMS_Broker.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(BrokerDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BrokerDbContext).Assembly);
 
-            modelBuilder.ApplyConfiguration(new AccountMSConfiguration());
-            modelBuilder.ApplyConfiguration(new MessageInboundConfiguration());
-            modelBuilder.ApplyConfiguration(new MessageOutboundConfiguration());
+            //modelBuilder.ApplyConfiguration(new AccountMSConfiguration());
+            //modelBuilder.ApplyConfiguration(new MessageInboundConfiguration());
+            //modelBuilder.ApplyConfiguration(new MessageOutboundConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

@@ -12,8 +12,8 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250427143511_deleteAll")]
-    partial class deleteAll
+    [Migration("20250502001324_Iniciado")]
+    partial class Iniciado
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,6 @@ namespace WhatsMS_Broker.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AuthToken")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("auth_token");
@@ -47,7 +46,6 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnName("client_name");
 
                     b.Property<string>("ClientSessionID")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("client_session_id");
 
@@ -69,19 +67,16 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone_number");
 
-                    b.Property<string>("PortRun")
-                        .IsRequired()
+                    b.Property<int>("PortRun")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
+                        .HasColumnType("integer")
                         .HasColumnName("port_run");
 
                     b.Property<string>("QrCodeBase64")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("qrcode_base64");
 
                     b.Property<string>("SessionName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("session_name");
@@ -93,7 +88,6 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("WebhookUrl")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("webhook_url");

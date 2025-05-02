@@ -15,8 +15,9 @@ namespace WhatsMS_Broker.Data.Configurations
         {
             builder.ToTable("tb_message_outbound");
 
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("id");
+            builder.Property(x => x.Id)
+                    .HasColumnName("id")
+                    .UseIdentityColumn();
 
             // Relacionamento com AccountMS (associando AccountId com a chave primária de AccountMS)
             builder.HasOne(x => x.Account)
