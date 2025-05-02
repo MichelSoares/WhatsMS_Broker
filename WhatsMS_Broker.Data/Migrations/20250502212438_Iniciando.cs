@@ -43,12 +43,23 @@ namespace WhatsMS_Broker.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     IdMessageWhatsApp = table.Column<string>(type: "text", nullable: false),
                     AccountId = table.Column<int>(type: "integer", nullable: false),
+                    date_received = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     from_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     to_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     message_type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
-                    date_received = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    is_group = table.Column<bool>(type: "boolean", nullable: false)
+                    type = table.Column<string>(type: "text", nullable: true),
+                    midia_content_type = table.Column<string>(type: "text", nullable: true),
+                    midia_url = table.Column<string>(type: "text", nullable: true),
+                    profile_name = table.Column<string>(type: "text", nullable: true),
+                    notify_name = table.Column<string>(type: "text", nullable: true),
+                    author = table.Column<string>(type: "text", nullable: true),
+                    latitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
+                    longitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
+                    is_forwarded = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    forwarding_score = table.Column<int>(type: "integer", nullable: true),
+                    is_group = table.Column<bool>(type: "boolean", nullable: false),
+                    is_coletado = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {

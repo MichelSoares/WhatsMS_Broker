@@ -22,7 +22,12 @@ namespace WhatsMS_Broker.Data.Configurations
             builder.HasOne(x => x.Account)
                    .WithMany() 
                    .HasForeignKey(x => x.AccountId)
-                   .OnDelete(DeleteBehavior.Restrict); 
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(x => x.DateReceived)
+                  .HasColumnName("date_received")
+                  .IsRequired()
+                  .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             builder.Property(x => x.FromNumber)
                    .HasColumnName("from_number")
@@ -44,13 +49,53 @@ namespace WhatsMS_Broker.Data.Configurations
                    .IsRequired()
                    .HasColumnType("text");
 
-            builder.Property(x => x.DateReceived)
-                   .HasColumnName("date_received")
-                   .IsRequired()
-                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            builder.Property(x => x.Type)
+                .HasColumnName("type")
+                .HasColumnType("text");
+
+            builder.Property(x => x.MidiaContentType)
+                .HasColumnName("midia_content_type")
+                .HasColumnType("text");
+
+            builder.Property(x => x.MidiaURL)
+                .HasColumnName("midia_url")
+                .HasColumnType("text");
+            
+            builder.Property(x => x.ProfileName)
+               .HasColumnName("profile_name")
+               .HasColumnType("text");
+
+            builder.Property(x => x.NotifyName)
+               .HasColumnName("notify_name")
+               .HasColumnType("text");
+
+            builder.Property(x => x.Author)
+               .HasColumnName("author")
+               .HasColumnType("text");
+
+            builder.Property(x => x.Latitude)
+                .HasColumnName("latitude")
+                .HasColumnType("decimal(10, 6)");
+
+            builder.Property(x => x.Longitude)
+               .HasColumnName("longitude")
+               .HasColumnType("decimal(10, 6)");
+
+            builder.Property(x => x.IsForwarded)
+                .HasColumnName("is_forwarded")
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.Property(x => x.ForwardingScore)
+               .HasColumnName("forwarding_score");
 
             builder.Property(x => x.IsGroup).HasColumnName("is_group")
                    .IsRequired();
+
+            builder.Property(x => x.IsColetado)
+               .HasColumnName("is_coletado")
+               .IsRequired()
+               .HasDefaultValue(false);
 
             builder.HasIndex(x => x.DateReceived); // Índice para Data de Recebimento, útil para queries
         }

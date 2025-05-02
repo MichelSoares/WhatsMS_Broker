@@ -152,7 +152,6 @@ const initializeWhatsAppClient = () => {
 
   client.on('message', async (message) => {
     logger.info(`[Mensagem recebida] ${message.from}: ${message.body}`);
-    
     logger.info(`obj integro evento message Whats: ${JSON.stringify(message)}`);
 
     if(!accountWhatsMS){
@@ -163,11 +162,21 @@ const initializeWhatsAppClient = () => {
     const msgInboundDTO: MessageInboundDTO = {
       idMessageWhatsApp: message.id.id,
       accountId: accountWhatsMS.id,
+      dateReceived: Helper.formatUnixToBR(message.timestamp),
       fromNumber: message.from,
       toNumber: message.to,
       messageType: message.type,
       content: message.body,
-      dateReceived: Helper.formatUnixToBR(message.timestamp),
+      type: "text",
+      midiaContentType: undefined,
+      midiaURL: undefined,
+      profileName: undefined,
+      NotifyName: message._data?.notifyName ?? undefined,
+      author: undefined,
+      latitude: 0,
+      longitude: 0,
+      isForwarded: false,
+      forwardingScore: message.forwardingScore,
       isGroup: false
     };
 

@@ -12,7 +12,7 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250502172042_Iniciando")]
+    [Migration("20250502212438_Iniciando")]
     partial class Iniciando
     {
         /// <inheritdoc />
@@ -109,6 +109,10 @@ namespace WhatsMS_Broker.Data.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Author")
+                        .HasColumnType("text")
+                        .HasColumnName("author");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text")
@@ -120,6 +124,10 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnName("date_received")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<int?>("ForwardingScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("forwarding_score");
+
                     b.Property<string>("FromNumber")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -130,9 +138,29 @@ namespace WhatsMS_Broker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsColetado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_coletado");
+
+                    b.Property<bool>("IsForwarded")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_forwarded");
+
                     b.Property<bool>("IsGroup")
                         .HasColumnType("boolean")
                         .HasColumnName("is_group");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("decimal(10, 6)")
+                        .HasColumnName("latitude");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("decimal(10, 6)")
+                        .HasColumnName("longitude");
 
                     b.Property<string>("MessageType")
                         .IsRequired()
@@ -140,11 +168,31 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("message_type");
 
+                    b.Property<string>("MidiaContentType")
+                        .HasColumnType("text")
+                        .HasColumnName("midia_content_type");
+
+                    b.Property<string>("MidiaURL")
+                        .HasColumnType("text")
+                        .HasColumnName("midia_url");
+
+                    b.Property<string>("NotifyName")
+                        .HasColumnType("text")
+                        .HasColumnName("notify_name");
+
+                    b.Property<string>("ProfileName")
+                        .HasColumnType("text")
+                        .HasColumnName("profile_name");
+
                     b.Property<string>("ToNumber")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("to_number");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
 

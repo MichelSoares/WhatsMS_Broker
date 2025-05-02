@@ -18,12 +18,22 @@ namespace WhatsMS_Broker.API.Services
             var message = new MessageInbound
             {
                 AccountId = msgDTO.AccountId,
+                DateReceived = msgDTO.DateReceived,
                 IdMessageWhatsApp = msgDTO.IdMessageWhatsApp,
                 FromNumber = msgDTO.FromNumber,
                 ToNumber = msgDTO.ToNumber,
                 MessageType = msgDTO.MessageType,
                 Content = msgDTO.Content,
-                DateReceived = msgDTO.DateReceived,
+                Type = msgDTO.Type,
+                MidiaContentType = msgDTO.MidiaContentType,
+                MidiaURL = msgDTO.MidiaURL,
+                ProfileName = msgDTO.ProfileName,
+                NotifyName = msgDTO.NotifyName,
+                Author = msgDTO.Author,
+                Latitude = msgDTO.Latitude,
+                Longitude = msgDTO.Longitude,
+                IsForwarded = msgDTO.IsForwarded,
+                IsColetado = false,
                 IsGroup = msgDTO.IsGroup
             };
 
