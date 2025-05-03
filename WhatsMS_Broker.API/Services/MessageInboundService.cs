@@ -13,7 +13,7 @@ namespace WhatsMS_Broker.API.Services
         {
             _brokerDbContext = brokerDbContext;
         }
-        public async Task MessageReceived(MessageInboundDTO msgDTO)
+        public async Task MessageReceivedAsync(MessageInboundDTO msgDTO)
         {
             var message = new MessageInbound
             {

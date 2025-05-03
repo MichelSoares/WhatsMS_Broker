@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using WhatsMS_Broker.API.Configurations;
 using WhatsMS_Broker.API.Interfaces;
 using WhatsMS_Broker.API.Services;
 using WhatsMS_Broker.Data.Context;
@@ -12,6 +13,13 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IClientWhatsMSService, ClientWhatsMSService>();
 builder.Services.AddScoped<IMessageInbound, MessageInboundService>();
+builder.Services.AddScoped<IMessageOutbound, MessageOutboundService>();
+
+var nodeBaseUrl = builder.Configuration["NodeApi:BaseUrl"];
+builder.Services.AddHttpClient<IMessageSendAppNode, MessageSendAppNodeService>(client =>
+{
+    client.BaseAddress = new Uri(nodeBaseUrl);
+});
 
 builder.Services.AddDbContext<BrokerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

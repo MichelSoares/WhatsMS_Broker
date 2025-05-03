@@ -15,20 +15,37 @@ namespace WhatsMS_Broker.Data.Configurations
         {
             builder.ToTable("tb_message_outbound");
 
-            builder.Property(x => x.Id)
-                    .HasColumnName("id")
-                    .UseIdentityColumn();
+            builder.HasKey(x => x.Id);
 
-            // Relacionamento com AccountMS (associando AccountId com a chave primária de AccountMS)
+            builder.Property(x => x.Id)
+                   .HasColumnName("id")
+                   .UseIdentityColumn();
+
+            builder.Property(x => x.IdMsg)
+                   .HasColumnName("id_msg")
+                   .IsRequired();
+
+            builder.Property(x => x.AccountId)
+                   .HasColumnName("account_id");
+
             builder.HasOne(x => x.Account)
-                   .WithMany() // Supondo que AccountMS pode ter muitos MessageOutbounds
+                   .WithMany()
                    .HasForeignKey(x => x.AccountId)
-                   .OnDelete(DeleteBehavior.Restrict); // Restrição de exclusão caso a conta seja excluída
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(x => x.CreatedAt)
+                   .HasColumnName("created_at")
+                   .IsRequired()
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            builder.Property(x => x.SentAt)
+                   .HasColumnName("sent_at")
+                   .IsRequired();
 
             builder.Property(x => x.FromNumber)
-                  .HasColumnName("from_number")
-                  .IsRequired()
-                  .HasMaxLength(20);
+                   .HasColumnName("from_number")
+                   .IsRequired()
+                   .HasMaxLength(20);
 
             builder.Property(x => x.ToNumber)
                    .HasColumnName("to_number")
@@ -43,23 +60,38 @@ namespace WhatsMS_Broker.Data.Configurations
             builder.Property(x => x.Content)
                    .HasColumnName("content")
                    .IsRequired()
-                   .HasColumnType("text"); // Caso o conteúdo da mensagem seja grande (base64 ou texto longo)
+                   .HasColumnType("text");
 
-            builder.Property(x => x.CreatedAt)
-                   .HasColumnName("created_at")
-                   .IsRequired()
-                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            builder.Property(x => x.Type)
+                   .HasColumnName("type")
+                   .HasColumnType("text");
 
-            builder.Property(x => x.SentAt)
-                   .HasColumnName("sent_at")
-                   .IsRequired();
+            builder.Property(x => x.MidiaContentType)
+                   .HasColumnName("midia_content_type")
+                   .HasColumnType("text");
 
-            // Se MessageStatus for um enum, utilize o seguinte mapeamento
+            builder.Property(x => x.MidiaURL)
+                   .HasColumnName("midia_url")
+                   .HasColumnType("text");
+
+            builder.Property(x => x.Latitude)
+                    .HasColumnName("latitude")
+                    .HasColumnType("decimal(10, 6)");
+
+            builder.Property(x => x.Longitude)
+                    .HasColumnName("longitude")
+                    .HasColumnType("decimal(10, 6)");
+
+            builder.Property(x => x.IsGroup)
+                   .HasColumnName("is_group");
+
             builder.Property(x => x.Status)
+                   .HasColumnName("status")
                    .IsRequired()
-                   .HasConversion<string>(); // Converte o enum para string (se for do tipo enum)
+                   .HasConversion<string>();
 
-            builder.HasIndex(x => x.Status); // Índice para Status, útil para queries
+            builder.HasIndex(x => x.Status);
         }
     }
+
 }

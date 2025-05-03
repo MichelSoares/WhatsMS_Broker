@@ -12,7 +12,7 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250502212438_Iniciando")]
+    [Migration("20250503030352_Iniciando")]
     partial class Iniciando
     {
         /// <inheritdoc />
@@ -107,7 +107,8 @@ namespace WhatsMS_Broker.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("account_id");
 
                     b.Property<string>("Author")
                         .HasColumnType("text")
@@ -136,7 +137,8 @@ namespace WhatsMS_Broker.Data.Migrations
 
                     b.Property<string>("IdMessageWhatsApp")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("id_message_whatsApp");
 
                     b.Property<bool>("IsColetado")
                         .ValueGeneratedOnAdd()
@@ -213,7 +215,8 @@ namespace WhatsMS_Broker.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("account_id");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -232,11 +235,36 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("from_number");
 
+                    b.Property<string>("IdMsg")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("id_msg");
+
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_group");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("decimal(10, 6)")
+                        .HasColumnName("latitude");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("decimal(10, 6)")
+                        .HasColumnName("longitude");
+
                     b.Property<string>("MessageType")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("message_type");
+
+                    b.Property<string>("MidiaContentType")
+                        .HasColumnType("text")
+                        .HasColumnName("midia_content_type");
+
+                    b.Property<string>("MidiaURL")
+                        .HasColumnType("text")
+                        .HasColumnName("midia_url");
 
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("timestamp with time zone")
@@ -244,13 +272,18 @@ namespace WhatsMS_Broker.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<string>("ToNumber")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("to_number");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
 

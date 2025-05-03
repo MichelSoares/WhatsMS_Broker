@@ -29,18 +29,18 @@ namespace WhatsMS_Broker.API.Services
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task<int> CheckPhoneNumberExists(string phoneNumber)
+        public async Task<int> CheckPhoneNumberExistsAsync(string phoneNumber)
         {
             return await _brokerDbContext.Accounts
                 .CountAsync(a => a.PhoneNumber == phoneNumber);
         }
 
-        public async Task<bool> CheckUptimeGenerateQRCode(string phoneNumber)
+        public async Task<bool> CheckUptimeGenerateQRCodeAsync(string phoneNumber)
         {
             return await _brokerDbContext.Accounts.AnyAsync(a => a.PhoneNumber == phoneNumber && a.UpdatedAt > DateTime.UtcNow.AddMinutes(-1));
         }
 
-        public async Task NewInstanceClientNode(string phoneNumber, UpdateQRCodeDTO newInstanceNode)
+        public async Task NewInstanceClientNodeAsync(string phoneNumber, UpdateQRCodeDTO newInstanceNode)
         {
             var account = await _brokerDbContext.Accounts
                 .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
@@ -55,7 +55,7 @@ namespace WhatsMS_Broker.API.Services
             await _brokerDbContext.SaveChangesAsync();
         }
 
-        public async Task ResetQRCode(string phoneNumber)
+        public async Task ResetQRCodeAsync(string phoneNumber)
         {
             var account = await _brokerDbContext.Accounts
                 .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
@@ -70,7 +70,7 @@ namespace WhatsMS_Broker.API.Services
             await _brokerDbContext.SaveChangesAsync();
         }
 
-        public async Task NewSessionId(string phoneNumber, string sessionId)
+        public async Task NewSessionIdAsync(string phoneNumber, string sessionId)
         {
             var account = await _brokerDbContext.Accounts
                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
@@ -83,7 +83,7 @@ namespace WhatsMS_Broker.API.Services
             await _brokerDbContext.SaveChangesAsync();
         }
 
-        public async Task SetUptimeGenerateQrcode(string phoneNumber)
+        public async Task SetUptimeGenerateQrcodeAsync(string phoneNumber)
         {
             var account = await _brokerDbContext.Accounts
                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
@@ -96,7 +96,7 @@ namespace WhatsMS_Broker.API.Services
             await _brokerDbContext.SaveChangesAsync();
         }
 
-        public async Task SetAuthenticatedPhoneNumber(string phoneNumber)
+        public async Task SetAuthenticatedPhoneNumberAsync(string phoneNumber)
         {
             var account = await _brokerDbContext.Accounts
               .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);

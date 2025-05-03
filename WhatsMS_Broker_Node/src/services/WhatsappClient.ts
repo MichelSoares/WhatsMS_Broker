@@ -289,7 +289,7 @@ export const sendMessageToWhatsApp = async (phoneNumber: string, message: string
   }
   // WhatsApp aqui vou esperar o num no formato -> (DDI + DDD + número) +  @c.us
   const chatId = `${phoneNumber}@c.us`;
-
+  logger.info(`Enviando mensagem para: ${phoneNumber} - body: ${message}`);
   return client.sendMessage(chatId, message);
 };
 

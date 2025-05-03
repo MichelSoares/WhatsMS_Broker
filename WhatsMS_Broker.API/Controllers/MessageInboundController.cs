@@ -27,7 +27,7 @@ namespace WhatsMS_Broker.API.Controllers
                 return BadRequest("Mensagem inválida.");
             }
 
-            await _messageInbound.MessageReceived(msgInbound);
+            await _messageInbound.MessageReceivedAsync(msgInbound);
 
             return Ok("Mensagem recebida com sucesso.");
         }

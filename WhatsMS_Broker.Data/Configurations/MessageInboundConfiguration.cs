@@ -19,6 +19,13 @@ namespace WhatsMS_Broker.Data.Configurations
                     .HasColumnName("id")
                     .UseIdentityColumn();
 
+            builder.Property(x => x.IdMessageWhatsApp)
+                .HasColumnName("id_message_whatsApp")
+                .IsRequired();
+
+            builder.Property(x => x.AccountId)
+                    .HasColumnName("account_id");
+
             builder.HasOne(x => x.Account)
                    .WithMany() 
                    .HasForeignKey(x => x.AccountId)
@@ -78,8 +85,8 @@ namespace WhatsMS_Broker.Data.Configurations
                 .HasColumnType("decimal(10, 6)");
 
             builder.Property(x => x.Longitude)
-               .HasColumnName("longitude")
-               .HasColumnType("decimal(10, 6)");
+                .HasColumnName("longitude")
+                .HasColumnType("decimal(10, 6)");
 
             builder.Property(x => x.IsForwarded)
                 .HasColumnName("is_forwarded")

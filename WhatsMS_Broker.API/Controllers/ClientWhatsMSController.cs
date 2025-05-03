@@ -43,7 +43,7 @@ namespace WhatsMS_Broker.API.Controllers
                 throw new ArgumentNullException("informe o número do telefone da instancia client Node!");
             }
 
-            var count = await _clientWhatsMSService.CheckPhoneNumberExists(phoneNumber);
+            var count = await _clientWhatsMSService.CheckPhoneNumberExistsAsync(phoneNumber);
             return Ok(count);
         }
 
@@ -54,7 +54,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            var genQrcode = await _clientWhatsMSService.CheckUptimeGenerateQRCode(phoneNumber);
+            var genQrcode = await _clientWhatsMSService.CheckUptimeGenerateQRCodeAsync(phoneNumber);
 
             return Ok(new { genQrcode });
 
@@ -67,7 +67,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (updateQRCodeDTO == null)
                 return BadRequest("Informe os dados do client Node!");
 
-            await _clientWhatsMSService.NewInstanceClientNode(phoneNumber, updateQRCodeDTO);
+            await _clientWhatsMSService.NewInstanceClientNodeAsync(phoneNumber, updateQRCodeDTO);
             return Ok("Dados atualizados com sucesso.");
         }
 
@@ -78,7 +78,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            await _clientWhatsMSService.ResetQRCode(phoneNumber);
+            await _clientWhatsMSService.ResetQRCodeAsync(phoneNumber);
             return Ok("Reset ok.");
         }
 
@@ -89,7 +89,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            await _clientWhatsMSService.NewSessionId(phoneNumber, sessionId);
+            await _clientWhatsMSService.NewSessionIdAsync(phoneNumber, sessionId);
             return Ok("nova sessionId ok");
 
         }
@@ -101,7 +101,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            await _clientWhatsMSService.SetUptimeGenerateQrcode(phoneNumber);
+            await _clientWhatsMSService.SetUptimeGenerateQrcodeAsync(phoneNumber);
             return Ok("set uptime ok");
 
         }
@@ -113,7 +113,7 @@ namespace WhatsMS_Broker.API.Controllers
             if (string.IsNullOrEmpty(phoneNumber))
                 return BadRequest("Informe o número de telefone");
 
-            await _clientWhatsMSService.SetAuthenticatedPhoneNumber(phoneNumber);
+            await _clientWhatsMSService.SetAuthenticatedPhoneNumberAsync(phoneNumber);
             return Ok("set auth");
 
         }

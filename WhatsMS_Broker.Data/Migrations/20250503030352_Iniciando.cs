@@ -41,8 +41,8 @@ namespace WhatsMS_Broker.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdMessageWhatsApp = table.Column<string>(type: "text", nullable: false),
-                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    id_message_whatsApp = table.Column<string>(type: "text", nullable: false),
+                    account_id = table.Column<int>(type: "integer", nullable: false),
                     date_received = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     from_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     to_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
@@ -65,8 +65,8 @@ namespace WhatsMS_Broker.Data.Migrations
                 {
                     table.PrimaryKey("PK_tb_message_inbound", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tb_message_inbound_tb_accounts_AccountId",
-                        column: x => x.AccountId,
+                        name: "FK_tb_message_inbound_tb_accounts_account_id",
+                        column: x => x.account_id,
                         principalTable: "tb_accounts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -78,30 +78,37 @@ namespace WhatsMS_Broker.Data.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    id_msg = table.Column<string>(type: "text", nullable: false),
+                    account_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    sent_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     from_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     to_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     message_type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    sent_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false)
+                    type = table.Column<string>(type: "text", nullable: true),
+                    midia_content_type = table.Column<string>(type: "text", nullable: true),
+                    midia_url = table.Column<string>(type: "text", nullable: true),
+                    latitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
+                    longitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
+                    is_group = table.Column<bool>(type: "boolean", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_message_outbound", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tb_message_outbound_tb_accounts_AccountId",
-                        column: x => x.AccountId,
+                        name: "FK_tb_message_outbound_tb_accounts_account_id",
+                        column: x => x.account_id,
                         principalTable: "tb_accounts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_message_inbound_AccountId",
+                name: "IX_tb_message_inbound_account_id",
                 table: "tb_message_inbound",
-                column: "AccountId");
+                column: "account_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_message_inbound_date_received",
@@ -109,14 +116,14 @@ namespace WhatsMS_Broker.Data.Migrations
                 column: "date_received");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_message_outbound_AccountId",
+                name: "IX_tb_message_outbound_account_id",
                 table: "tb_message_outbound",
-                column: "AccountId");
+                column: "account_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_message_outbound_Status",
+                name: "IX_tb_message_outbound_status",
                 table: "tb_message_outbound",
-                column: "Status");
+                column: "status");
         }
 
         /// <inheritdoc />

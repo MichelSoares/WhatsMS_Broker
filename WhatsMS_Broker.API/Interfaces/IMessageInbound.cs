@@ -4,6 +4,6 @@ namespace WhatsMS_Broker.API.Interfaces
 {
     public interface IMessageInbound
     {
-        Task MessageReceived(MessageInboundDTO msgInboundDTO);
+        Task MessageReceivedAsync(MessageInboundDTO msgInboundDTO);
     }
 }
