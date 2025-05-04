@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WhatsMS_Broker.Domain.Entidades
 {
-    public class UsuarioWhatsMS
+    public class UserWhatsMS
     {
         public string Id { get; set; }
         public string NameUser { get; set; }

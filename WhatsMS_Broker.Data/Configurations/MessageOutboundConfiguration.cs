@@ -85,12 +85,22 @@ namespace WhatsMS_Broker.Data.Configurations
             builder.Property(x => x.IsGroup)
                    .HasColumnName("is_group");
 
-            builder.Property(x => x.Status)
+            /*builder.Property(x => x.Status)
                    .HasColumnName("status")
                    .IsRequired()
                    .HasConversion<string>();
 
-            builder.HasIndex(x => x.Status);
+            builder.HasIndex(x => x.Status);*/
+
+            builder.Property(x => x.StatusId)
+                   .HasColumnName("status_id")
+                   .IsRequired();
+
+            builder.HasOne(x => x.Status)
+                   .WithMany(s => s.MessageOutbounds)
+                   .HasForeignKey(x => x.StatusId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 

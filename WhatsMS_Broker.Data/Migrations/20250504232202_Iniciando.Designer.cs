@@ -12,7 +12,7 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250503030352_Iniciando")]
+    [Migration("20250504232202_Iniciando")]
     partial class Iniciando
     {
         /// <inheritdoc />
@@ -270,10 +270,9 @@ namespace WhatsMS_Broker.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("sent_at");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
+                    b.Property<int>("StatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_id");
 
                     b.Property<string>("ToNumber")
                         .IsRequired()
@@ -289,9 +288,53 @@ namespace WhatsMS_Broker.Data.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("tb_message_outbound", (string)null);
+                });
+
+            modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("descricao");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tb_message_status", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 0,
+                            Descricao = "Pendente"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            Descricao = "Enviada"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descricao = "Entregue"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Descricao = "Lida"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Descricao = "Falhou"
+                        });
                 });
 
             modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageInbound", b =>
@@ -313,7 +356,20 @@ namespace WhatsMS_Broker.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("WhatsMS_Broker.Domain.Entidades.MessageStatus", "Status")
+                        .WithMany("MessageOutbounds")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Account");
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageStatus", b =>
+                {
+                    b.Navigation("MessageOutbounds");
                 });
 #pragma warning restore 612, 618
         }

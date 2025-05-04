@@ -28,6 +28,7 @@ namespace WhatsMS_Broker.Domain.Entidades
         public double? Longitude { get; set; }
         public bool IsGroup { get; set; }
 
+        public int StatusId { get; set; }
         public MessageStatus Status { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WhatsMS_Broker.Data.Configurations;
 using WhatsMS_Broker.Domain.Entidades;
+using WhatsMS_Broker.Domain.Enums;
 
 namespace WhatsMS_Broker.Data.Context
 {
@@ -16,6 +17,7 @@ namespace WhatsMS_Broker.Data.Context
         public DbSet<AccountMS> Accounts { get; set; }
         public DbSet<MessageInbound> MessageInbounds { get; set; }
         public DbSet<MessageOutbound> MessageOutbounds { get; set; }
+        public DbSet<MessageStatus> MessageStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

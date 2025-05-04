@@ -104,7 +104,7 @@ namespace WhatsMS_Broker.Data.Configurations
                .IsRequired()
                .HasDefaultValue(false);
 
-            builder.HasIndex(x => x.DateReceived); // Índice para Data de Recebimento, útil para queries
+            builder.HasIndex(x => x.DateReceived);
         }
     }
 }

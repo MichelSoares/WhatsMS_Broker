@@ -24,6 +24,6 @@ namespace WhatsMS_Broker.API.DTOs.Request
         public double? Longitude { get; set; }
         public bool IsGroup { get; set; }
 
-        public MessageStatus Status { get; set; }
+        public MessageStatusEnum Status { get; set; }
     }
 }

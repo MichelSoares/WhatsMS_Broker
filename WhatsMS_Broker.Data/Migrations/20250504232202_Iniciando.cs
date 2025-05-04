@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WhatsMS_Broker.Data.Migrations
 {
     /// <inheritdoc />
@@ -33,6 +35,18 @@ namespace WhatsMS_Broker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_accounts", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_message_status",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false),
+                    descricao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_message_status", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,7 +106,7 @@ namespace WhatsMS_Broker.Data.Migrations
                     latitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
                     longitude = table.Column<double>(type: "numeric(10,6)", nullable: true),
                     is_group = table.Column<bool>(type: "boolean", nullable: false),
-                    status = table.Column<string>(type: "text", nullable: false)
+                    status_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,6 +117,24 @@ namespace WhatsMS_Broker.Data.Migrations
                         principalTable: "tb_accounts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tb_message_outbound_tb_message_status_status_id",
+                        column: x => x.status_id,
+                        principalTable: "tb_message_status",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "tb_message_status",
+                columns: new[] { "id", "descricao" },
+                values: new object[,]
+                {
+                    { 0, "Pendente" },
+                    { 1, "Enviada" },
+                    { 2, "Entregue" },
+                    { 3, "Lida" },
+                    { 4, "Falhou" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -121,9 +153,9 @@ namespace WhatsMS_Broker.Data.Migrations
                 column: "account_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_message_outbound_status",
+                name: "IX_tb_message_outbound_status_id",
                 table: "tb_message_outbound",
-                column: "status");
+                column: "status_id");
         }
 
         /// <inheritdoc />
@@ -137,6 +169,9 @@ namespace WhatsMS_Broker.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "tb_accounts");
+
+            migrationBuilder.DropTable(
+                name: "tb_message_status");
         }
     }
 }
