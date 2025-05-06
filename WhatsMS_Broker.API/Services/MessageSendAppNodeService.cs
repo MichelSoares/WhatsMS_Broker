@@ -1,5 +1,8 @@
-﻿using WhatsMS_Broker.API.DTOs.Request;
+﻿using System.Text.Json;
+using WhatsMS_Broker.API.DTOs.Request;
+using WhatsMS_Broker.API.DTOs.Response;
 using WhatsMS_Broker.API.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WhatsMS_Broker.API.Services
 {
@@ -11,7 +14,7 @@ namespace WhatsMS_Broker.API.Services
         {
             _httpClient = httpClient;
         }
-        public async Task SendToNodeAsync(MessageOutboundDTO msg)
+        public async Task<string> SendToNodeAsync(MessageOutboundDTO msg)
         {
             var response = await _httpClient.PostAsJsonAsync("/send-message", msg);
 
@@ -20,6 +23,15 @@ namespace WhatsMS_Broker.API.Services
                 var error = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Erro ao chamar Node API: {response.StatusCode} - {error}");
             }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            //var retSend = JsonConvert.DeserializeObject<SendMessageResponse>(responseContent);
+            var retSend = JsonSerializer.Deserialize<SendMessageResponse>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return retSend?.response ?? throw new Exception("Resposta inválida da APP Node...");
         }
     }
 }

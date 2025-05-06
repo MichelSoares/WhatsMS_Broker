@@ -15,11 +15,11 @@ namespace WhatsMS_Broker.API.Services
             _brokerDbContext = brokerDbContext;
         }
 
-        public async Task<AccountMSStatusDTO?> CheckStatusByPhoneNumberAsync(string phoneNumber)
+        public async Task<AccountMSStatusResponse?> CheckStatusByPhoneNumberAsync(string phoneNumber)
         {
             return 
                 await _brokerDbContext.Accounts.Where(a => a.PhoneNumber == phoneNumber)
-                .Select(a => new AccountMSStatusDTO
+                .Select(a => new AccountMSStatusResponse
                 {
                     id = a.Id,
                     auth_token = a.AuthToken,

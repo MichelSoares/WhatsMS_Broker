@@ -17,29 +17,33 @@ namespace WhatsMS_Broker.API.Services
         }
         public async Task SendMessageAsync(MessageOutboundDTO msgOutboundDTO)
         {
-            var message = new MessageOutbound 
+            string idMsgOut = await _sender.SendToNodeAsync(msgOutboundDTO);
+
+            if (!string.IsNullOrEmpty(idMsgOut))
             {
-                IdMsg = msgOutboundDTO.IdMsg,
-                AccountId = msgOutboundDTO.AccountId,
-                CreatedAt = msgOutboundDTO.CreatedAt,
-                SentAt = msgOutboundDTO.SentAt,
-                FromNumber = msgOutboundDTO.FromNumber,
-                ToNumber = msgOutboundDTO.ToNumber,
-                MessageType = msgOutboundDTO.MessageType,
-                Content = msgOutboundDTO.Content,
-                Type = msgOutboundDTO.Type,
-                MidiaContentType = msgOutboundDTO.MidiaContentType,
-                MidiaURL = msgOutboundDTO.MidiaURL,
-                Latitude = msgOutboundDTO.Latitude,
-                Longitude = msgOutboundDTO.Longitude,
-                IsGroup = false,
+                var message = new MessageOutbound
+                {
+                    IdMsg = idMsgOut,
+                    AccountId = msgOutboundDTO.AccountId,
+                    CreatedAt = msgOutboundDTO.CreatedAt,
+                    SentAt = msgOutboundDTO.SentAt,
+                    FromNumber = msgOutboundDTO.FromNumber,
+                    ToNumber = msgOutboundDTO.ToNumber,
+                    MessageType = msgOutboundDTO.MessageType,
+                    Content = msgOutboundDTO.Content,
+                    Type = msgOutboundDTO.Type,
+                    MidiaContentType = msgOutboundDTO.MidiaContentType,
+                    MidiaURL = msgOutboundDTO.MidiaURL,
+                    Latitude = msgOutboundDTO.Latitude,
+                    Longitude = msgOutboundDTO.Longitude,
+                    IsGroup = false,
 
-            };
+                };
 
-            await _brokerDbContext.MessageOutbounds.AddAsync(message);
-            await _brokerDbContext.SaveChangesAsync();
-
-            await _sender.SendToNodeAsync(msgOutboundDTO);
+                await _brokerDbContext.MessageOutbounds.AddAsync(message);
+                await _brokerDbContext.SaveChangesAsync();
+            }
+            
         }
     }
 }

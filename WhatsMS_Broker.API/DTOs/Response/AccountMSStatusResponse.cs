@@ -1,6 +1,6 @@
 ﻿namespace WhatsMS_Broker.API.DTOs.Response
 {
-    public class AccountMSStatusDTO
+    public class AccountMSStatusResponse
     {
         public int id { get; set; }
         public string auth_token { get; set; }

@@ -6,7 +6,7 @@ namespace WhatsMS_Broker.API.DTOs.Request
     public class MessageOutboundDTO
     {
         //public int Id { get; set; }
-        public string IdMsg { get; set; }
+        //public string IdMsg { get; set; }
         public int AccountId { get; set; }
         //public AccountMS Account { get; set; }
 

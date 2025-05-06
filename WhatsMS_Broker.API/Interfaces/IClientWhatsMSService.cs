@@ -5,7 +5,7 @@ namespace WhatsMS_Broker.API.Interfaces
 {
     public interface IClientWhatsMSService
     {
-        Task<AccountMSStatusDTO?> CheckStatusByPhoneNumberAsync(string phoneNumber);
+        Task<AccountMSStatusResponse?> CheckStatusByPhoneNumberAsync(string phoneNumber);
         Task<int> CheckPhoneNumberExistsAsync(string phoneNumber);
         Task<bool> CheckUptimeGenerateQRCodeAsync(string phoneNumber);
         Task NewInstanceClientNodeAsync(string phoneNumber, UpdateQRCodeDTO newInstanceNode);

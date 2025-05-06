@@ -4,6 +4,6 @@ namespace WhatsMS_Broker.API.Interfaces
 {
     public interface IMessageSendAppNode
     {
-        Task SendToNodeAsync(MessageOutboundDTO msg);
+        Task<string> SendToNodeAsync(MessageOutboundDTO msg);
     }
 }

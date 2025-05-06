@@ -130,7 +130,18 @@ const initializeWhatsAppClient = () => {
   });
 
   client.on('message_ack', async (message, ack) => {
+    /* Conforme info na documentacao da lib Whatsapp-web.js
+      POSSIBLE ACK VALUES:
+      ACK_ERROR: -1 - Erro
+      ACK_PENDING: 0 - Pendente
+      ACK_SERVER: 1 - Processado no servidor
+      ACK_DEVICE: 2 - Já está no dispositivo, logo foi ENTREGUE
+      ACK_READ: 3 - Lida
+      ACK_PLAYED: 4 - Executado
+    */
 
+      //logger.info(`message -> ${JSON.stringify(message)} \n ACK -> ${JSON.stringify(ack)}`);
+      logger.info(`Atualizado o status da messagem enviada - messageid: ${message.id.id} \t status: ${ack}`);
   });
 
   client.on('ready', async () => {
@@ -290,7 +301,9 @@ export const sendMessageToWhatsApp = async (phoneNumber: string, message: string
   // WhatsApp aqui vou esperar o num no formato -> (DDI + DDD + número) +  @c.us
   const chatId = `${phoneNumber}@c.us`;
   logger.info(`Enviando mensagem para: ${phoneNumber} - body: ${message}`);
-  return client.sendMessage(chatId, message);
+  const sentMessage = await client.sendMessage(chatId, message);
+  logger.info(`Mensagem enviada com ID: ${sentMessage.id.id}`);
+  return sentMessage.id.id;
 };
 
 
