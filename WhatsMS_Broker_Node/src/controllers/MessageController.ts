@@ -12,8 +12,10 @@ export const sendMessage: RequestHandler = async (req, res) => {
 
   try {
     const response = await sendMessageToWhatsApp(msg.toNumber, msg.content);
-    res.status(200).json({ message: 'Mensagem enviada com sucesso', response });
+    //res.status(200).json({ message: 'Mensagem enviada com sucesso', response });
     //res.status(200).json({ response });
+    res.status(200).json(response);
+
   } catch (error) {
     res.status(500).json({
       error: 'Error sending message',

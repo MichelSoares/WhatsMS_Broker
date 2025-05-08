@@ -14,7 +14,7 @@ namespace WhatsMS_Broker.API.Services
         {
             _httpClient = httpClient;
         }
-        public async Task<string> SendToNodeAsync(MessageOutboundDTO msg)
+        public async Task<SendMessageResponse> SendToNodeAsync(MessageOutboundDTO msg)
         {
             var response = await _httpClient.PostAsJsonAsync("/send-message", msg);
 
@@ -31,7 +31,7 @@ namespace WhatsMS_Broker.API.Services
                 PropertyNameCaseInsensitive = true
             });
 
-            return retSend?.response ?? throw new Exception("Resposta inválida da APP Node...");
+            return retSend ?? throw new Exception("Resposta inválida da APP Node...");
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class SendMessageResponse
     {
-        public string message { get; set; }
-        public string response { get; set; }
+        public string id { get; set; }
+        public long timestamp { get; set; }
     }
 }

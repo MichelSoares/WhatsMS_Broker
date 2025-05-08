@@ -5,8 +5,9 @@ import path from 'path';
 import { RequestAPIBroker } from './RequestAPIBroker';
 import { QRCode } from '../types/Entities/QRCode';
 import { MessageInboundDTO } from '../types/DTOs/Request/MessageInboundDTO';
-import { AccountWhatsMSDTO } from '../types/DTOs/Response/AccountWhatsMSDTO';
+import { AccountWhatsMSResponse } from '../types/DTOs/Response/AccountWhatsMSResponse';
 import { Helper } from '../utils/Helper';
+import { MessageOutboundResponse } from '../types/DTOs/Response/MessageOutboundResponse';
 
 const sender = process.env.PHONE_NUMBER;
 const baseUrlAPI = process.env.URL_BASE_API_BROKER;
@@ -17,7 +18,7 @@ const qrcode_url = require('qrcode');
 //const os = require('os');
 const fs = require('fs').promises;
 //const clientWhatsMS: object;
-let accountWhatsMS: AccountWhatsMSDTO | null;;
+let accountWhatsMS: AccountWhatsMSResponse | null;;
 let client: Client;
 let sessionData: any;
 let isAuth: boolean;
@@ -140,8 +141,26 @@ const initializeWhatsAppClient = () => {
       ACK_PLAYED: 4 - Executado
     */
 
+      const idMsg = message.id.id;
+      let statusDesc;
+      switch(ack){
+        case 1:
+          statusDesc = 'PROCESSADA';
+          break;
+        case 2:
+          statusDesc = 'ENTREGUE';
+          break;
+        case 3:
+          statusDesc = 'LIDA';
+          break;
+        case 4:
+          statusDesc = 'EXECUTADA';
+          break;
+      }
+
       //logger.info(`message -> ${JSON.stringify(message)} \n ACK -> ${JSON.stringify(ack)}`);
-      logger.info(`Atualizado o status da messagem enviada - messageid: ${message.id.id} \t status: ${ack}`);
+      await doRequetBrokerAPI.requestAPI('PUT', `ClientWhatsMS/${idMsg}/${ack}/callback-update`);
+      logger.info(`Atualizado o status da messagem enviada - messageid: ${idMsg} \t status: ${statusDesc}`);
   });
 
   client.on('ready', async () => {
@@ -209,7 +228,7 @@ export async function connectWpp(forceNewSession = false) {
   try {
     logger.info(`DIRETORIO sessões -> ${SESSION_FILE_PATH}`);
 
-    accountWhatsMS = await doRequetBrokerAPI.requestAPI<AccountWhatsMSDTO>('GET', 'ClientWhatsMS/check-status/', undefined, {
+    accountWhatsMS = await doRequetBrokerAPI.requestAPI<AccountWhatsMSResponse>('GET', 'ClientWhatsMS/check-status/', undefined, {
       params: { phoneNumber: sender }
     });
 
@@ -302,8 +321,15 @@ export const sendMessageToWhatsApp = async (phoneNumber: string, message: string
   const chatId = `${phoneNumber}@c.us`;
   logger.info(`Enviando mensagem para: ${phoneNumber} - body: ${message}`);
   const sentMessage = await client.sendMessage(chatId, message);
-  logger.info(`Mensagem enviada com ID: ${sentMessage.id.id}`);
-  return sentMessage.id.id;
+  //logger.info(`OBJ COMPLETO: ${JSON.stringify(sentMessage)}`);
+  //logger.info(`Mensagem enviada com ID: ${sentMessage.id.id}`);
+
+  const msgOutResponse: MessageOutboundResponse = {
+     id: sentMessage.id.id,
+     timestamp: sentMessage.timestamp
+  }
+
+  return msgOutResponse;
 };
 
 

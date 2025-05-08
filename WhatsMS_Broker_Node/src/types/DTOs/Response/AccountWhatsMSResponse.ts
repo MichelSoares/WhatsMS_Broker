@@ -1,4 +1,4 @@
-export interface AccountWhatsMSDTO{
+export interface AccountWhatsMSResponse{
     id: number,
     auth_token: string,
     client_session_id: string,

@@ -13,5 +13,6 @@ namespace WhatsMS_Broker.API.Interfaces
         Task NewSessionIdAsync(string phoneNumber, string sessionId);
         Task SetUptimeGenerateQrcodeAsync(string phoneNumber);
         Task SetAuthenticatedPhoneNumberAsync(string phoneNumber);
+        Task CallbackUpdate(string idMessage, int statusMessage);
     }
 }

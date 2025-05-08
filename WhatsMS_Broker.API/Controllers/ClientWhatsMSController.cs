@@ -118,6 +118,18 @@ namespace WhatsMS_Broker.API.Controllers
 
         }
 
+        [HttpPut]
+        [Route("{idMessage}/{statusMessage}/callback-update")]
+        public async Task<IActionResult> CallbackUpdate(string idMessage, int statusMessage)
+        {
+            if (string.IsNullOrEmpty(idMessage))
+                return BadRequest("Informe o número de ID da mensagem");
+
+            await _clientWhatsMSService.CallbackUpdate(idMessage, statusMessage);
+            return Ok("callback ok!");
+
+        }
+
 
     }
 }

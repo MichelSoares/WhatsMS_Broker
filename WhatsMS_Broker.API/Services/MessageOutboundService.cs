@@ -1,5 +1,6 @@
 ﻿using WhatsMS_Broker.API.DTOs.Request;
 using WhatsMS_Broker.API.Interfaces;
+using WhatsMS_Broker.API.Utils;
 using WhatsMS_Broker.Data.Context;
 using WhatsMS_Broker.Domain.Entidades;
 
@@ -17,16 +18,16 @@ namespace WhatsMS_Broker.API.Services
         }
         public async Task SendMessageAsync(MessageOutboundDTO msgOutboundDTO)
         {
-            string idMsgOut = await _sender.SendToNodeAsync(msgOutboundDTO);
+            var msgOut = await _sender.SendToNodeAsync(msgOutboundDTO);
 
-            if (!string.IsNullOrEmpty(idMsgOut))
+            if (!string.IsNullOrEmpty(msgOut.id))
             {
                 var message = new MessageOutbound
                 {
-                    IdMsg = idMsgOut,
+                    IdMsg = msgOut.id,
                     AccountId = msgOutboundDTO.AccountId,
-                    CreatedAt = msgOutboundDTO.CreatedAt,
-                    SentAt = msgOutboundDTO.SentAt,
+                    CreatedAt = DateTime.UtcNow,
+                    SentAt = Helper.FormatUnixTimeToDate(msgOut.timestamp.ToString()),
                     FromNumber = msgOutboundDTO.FromNumber,
                     ToNumber = msgOutboundDTO.ToNumber,
                     MessageType = msgOutboundDTO.MessageType,

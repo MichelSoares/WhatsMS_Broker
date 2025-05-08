@@ -25,14 +25,14 @@ builder.Services.AddDbContext<BrokerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //
-/*Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .Enrich.FromLogContext()
     .WriteTo.Console()
     //.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Infinite)
     .CreateLogger();
-builder.Host.UseSerilog(); */
+builder.Host.UseSerilog();
 
 builder.Services.AddSwaggerGen(c =>
 {

@@ -3,6 +3,7 @@ using WhatsMS_Broker.API.DTOs.Request;
 using WhatsMS_Broker.API.DTOs.Response;
 using WhatsMS_Broker.API.Interfaces;
 using WhatsMS_Broker.Data.Context;
+using WhatsMS_Broker.Domain.Entidades;
 
 namespace WhatsMS_Broker.API.Services
 {
@@ -108,5 +109,24 @@ namespace WhatsMS_Broker.API.Services
 
             await _brokerDbContext.SaveChangesAsync();
         }
+
+        public async Task CallbackUpdate(string idMessage, int statusMessage)
+        {
+            var msgOut = await _brokerDbContext.MessageOutbounds
+                .FirstOrDefaultAsync(a => a.IdMsg == idMessage);
+
+            if (msgOut == null)
+                throw new Exception("Mensagem não encontrada.");
+
+            var statusMsg = await _brokerDbContext.MessageStatus.FirstOrDefaultAsync(s => s.Id == statusMessage);
+
+            if (statusMsg == null)
+                throw new Exception("Status informado não existe na base.");
+
+            msgOut.Status = statusMsg;
+
+            await _brokerDbContext.SaveChangesAsync();
+        }
+
     }
 }

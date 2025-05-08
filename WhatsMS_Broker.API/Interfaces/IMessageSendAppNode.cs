@@ -1,9 +1,10 @@
 ﻿using WhatsMS_Broker.API.DTOs.Request;
+using WhatsMS_Broker.API.DTOs.Response;
 
 namespace WhatsMS_Broker.API.Interfaces
 {
     public interface IMessageSendAppNode
     {
-        Task<string> SendToNodeAsync(MessageOutboundDTO msg);
+        Task<SendMessageResponse> SendToNodeAsync(MessageOutboundDTO msg);
     }
 }
