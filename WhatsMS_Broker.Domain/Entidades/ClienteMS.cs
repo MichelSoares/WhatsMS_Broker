@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace WhatsMS_Broker.Domain.Entidades
 {
-    public class UserWhatsMS
+    public class ClienteMS
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string NameUser { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+
+        public ICollection<AccountMS> Accounts { get; set; } = new List<AccountMS>();
     }
 }

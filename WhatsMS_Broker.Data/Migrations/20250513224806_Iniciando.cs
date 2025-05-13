@@ -15,11 +15,39 @@ namespace WhatsMS_Broker.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "tb_clientes",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name_user = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_clientes", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_message_status",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false),
+                    descricao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_message_status", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tb_accounts",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    cliente_id = table.Column<int>(type: "integer", nullable: false),
                     client_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     session_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -35,18 +63,12 @@ namespace WhatsMS_Broker.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_accounts", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tb_message_status",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false),
-                    descricao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_message_status", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tb_accounts_tb_clientes_cliente_id",
+                        column: x => x.cliente_id,
+                        principalTable: "tb_clientes",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,6 +160,11 @@ namespace WhatsMS_Broker.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_tb_accounts_cliente_id",
+                table: "tb_accounts",
+                column: "cliente_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tb_message_inbound_account_id",
                 table: "tb_message_inbound",
                 column: "account_id");
@@ -172,6 +199,9 @@ namespace WhatsMS_Broker.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "tb_message_status");
+
+            migrationBuilder.DropTable(
+                name: "tb_clientes");
         }
     }
 }

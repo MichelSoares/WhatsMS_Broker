@@ -9,6 +9,8 @@ namespace WhatsMS_Broker.Domain.Entidades
     public class AccountMS
     {
         public int Id { get; set; }
+        public int ClienteMSId { get; set; }
+        public ClienteMS ClienteMS { get; set; }
         public string ClientName { get; set; }
         public string PhoneNumber { get; set; }
         public string? SessionName { get; set; }

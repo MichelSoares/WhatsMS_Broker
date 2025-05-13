@@ -19,6 +19,15 @@ namespace WhatsMS_Broker.Data.Configurations
                     .HasColumnName("id")
                     .UseIdentityColumn();
 
+            builder.Property(x => x.ClienteMSId)
+              .HasColumnName("cliente_id")
+              .IsRequired();
+
+            builder.HasOne(x => x.ClienteMS)
+                   .WithMany(c => c.Accounts)
+                   .HasForeignKey(x => x.ClienteMSId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(x => x.ClientName)
                    .HasColumnName("client_name")
                    .IsRequired()

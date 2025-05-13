@@ -12,7 +12,7 @@ using WhatsMS_Broker.Data.Context;
 namespace WhatsMS_Broker.Data.Migrations
 {
     [DbContext(typeof(BrokerDbContext))]
-    [Migration("20250504232202_Iniciando")]
+    [Migration("20250513224806_Iniciando")]
     partial class Iniciando
     {
         /// <inheritdoc />
@@ -48,6 +48,10 @@ namespace WhatsMS_Broker.Data.Migrations
                     b.Property<string>("ClientSessionID")
                         .HasColumnType("text")
                         .HasColumnName("client_session_id");
+
+                    b.Property<int>("ClienteMSId")
+                        .HasColumnType("integer")
+                        .HasColumnName("cliente_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -94,7 +98,41 @@ namespace WhatsMS_Broker.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteMSId");
+
                     b.ToTable("tb_accounts", (string)null);
+                });
+
+            modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.ClienteMS", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("NameUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name_user");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("password");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tb_clientes", (string)null);
                 });
 
             modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageInbound", b =>
@@ -337,6 +375,17 @@ namespace WhatsMS_Broker.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.AccountMS", b =>
+                {
+                    b.HasOne("WhatsMS_Broker.Domain.Entidades.ClienteMS", "ClienteMS")
+                        .WithMany("Accounts")
+                        .HasForeignKey("ClienteMSId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClienteMS");
+                });
+
             modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageInbound", b =>
                 {
                     b.HasOne("WhatsMS_Broker.Domain.Entidades.AccountMS", "Account")
@@ -365,6 +414,11 @@ namespace WhatsMS_Broker.Data.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.ClienteMS", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("WhatsMS_Broker.Domain.Entidades.MessageStatus", b =>
