@@ -14,6 +14,7 @@ namespace WhatsMS_Broker.Data.Context
     {
         public BrokerDbContext(DbContextOptions<BrokerDbContext> options) : base(options) { }
 
+        public DbSet<ClienteMS> Clientes { get; set; }
         public DbSet<AccountMS> Accounts { get; set; }
         public DbSet<MessageInbound> MessageInbounds { get; set; }
         public DbSet<MessageOutbound> MessageOutbounds { get; set; }
