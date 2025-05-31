@@ -12,7 +12,8 @@ using WhatsMS_Broker.Data.Context;
 var builder = WebApplication.CreateBuilder(args);
 
 var keySecret = builder.Configuration["Jwt:keySecret"];
-var appAudience = builder.Configuration["Jwt:appAudience"];
+var issuer = builder.Configuration["Jwt:issuer"];
+var audience = builder.Configuration["Jwt:audience"];
 
 var key = Encoding.ASCII.GetBytes(keySecret);
 
@@ -31,8 +32,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = appAudience,
-        ValidAudience = appAudience,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });

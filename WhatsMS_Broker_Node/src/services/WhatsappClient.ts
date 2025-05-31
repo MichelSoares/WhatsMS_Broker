@@ -201,7 +201,7 @@ const initializeWhatsAppClient = () => {
       midiaContentType: undefined,
       midiaURL: undefined,
       profileName: undefined,
-      NotifyName: message._data?.notifyName ?? undefined,
+      //NotifyName: message._data?.notifyName ?? undefined,
       author: undefined,
       latitude: 0,
       longitude: 0,
@@ -229,7 +229,7 @@ export async function connectWpp(forceNewSession = false) {
     logger.info(`DIRETORIO sessões -> ${SESSION_FILE_PATH}`);
 
     accountWhatsMS = await doRequetBrokerAPI.requestAPI<AccountWhatsMSResponse>('GET', 'ClientWhatsMS/check-status/', undefined, {
-      params: { phoneNumber: sender }
+      params: { phoneNumber: sender }, 
     });
 
     if (!accountWhatsMS) {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WhatsMS_Broker.API.DTOs.Request;
 using WhatsMS_Broker.API.Interfaces;
 
@@ -17,6 +18,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("MessageReceived/")]
         public async Task<IActionResult> MessageInboundReceived([FromBody] MessageInboundDTO msgInbound)
         {

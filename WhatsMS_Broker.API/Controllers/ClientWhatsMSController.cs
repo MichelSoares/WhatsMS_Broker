@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WhatsMS_Broker.API.DTOs.Request;
 using WhatsMS_Broker.API.Interfaces;
 using WhatsMS_Broker.API.Services;
@@ -20,6 +21,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("check-status/")]
         public async Task<IActionResult> CheckStatusClient([FromQuery] string phoneNumber)
         {
@@ -35,6 +37,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("check-phonenumber-exists")]
         public async Task<IActionResult> CheckPhoneNumberExists([FromQuery] string phoneNumber)
         {
@@ -48,6 +51,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("check-uptime-qrcode")]
         public async Task<IActionResult> CheckUptimeGenerateQRCode([FromQuery] string phoneNumber)
         {
@@ -61,6 +65,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{phoneNumber}/qrcode")]
         public async Task<IActionResult> SetNewQRCode(string phoneNumber, [FromBody] UpdateQRCodeDTO updateQRCodeDTO)
         {
@@ -72,6 +77,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{phoneNumber}/reset-qrcode")]
         public async Task<IActionResult> ResetQRCode(string phoneNumber)
         {
@@ -83,6 +89,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{phoneNumber}/{sessionId}/new-session")]
         public async Task<IActionResult> NewSessionId(string phoneNumber, string sessionId)
         {
@@ -95,6 +102,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{phoneNumber}/set-uptime-generate-qrcode")]
         public async Task<IActionResult> SetUptimeGenQRCode(string phoneNumber)
         {
@@ -107,6 +115,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{phoneNumber}/set-auth")]
         public async Task<IActionResult> SetAuthenticatedPhoneNumber(string phoneNumber)
         {
@@ -119,6 +128,7 @@ namespace WhatsMS_Broker.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("{idMessage}/{statusMessage}/callback-update")]
         public async Task<IActionResult> CallbackUpdate(string idMessage, int statusMessage)
         {

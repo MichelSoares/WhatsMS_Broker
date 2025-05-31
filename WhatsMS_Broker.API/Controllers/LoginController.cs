@@ -38,11 +38,13 @@ namespace WhatsMS_Broker.API.Controllers
 
                 var tokenJwt = _geraToken.GerarToken(loginGeraTokenDTO.Email);
 
-                return Ok(new
-                {
-                    token = tokenJwt,
-                    email = loginGeraTokenDTO.Email
-                });
+                //return Ok(new
+                //{
+                //    token = tokenJwt,
+                //    email = loginGeraTokenDTO.Email
+                //});
+
+                return Ok(tokenJwt);
             }
             catch (Exception ex)
             {

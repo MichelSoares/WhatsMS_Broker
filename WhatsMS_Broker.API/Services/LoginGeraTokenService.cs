@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WhatsMS_Broker.API.DTOs.Request;
+using WhatsMS_Broker.API.DTOs.Response;
 using WhatsMS_Broker.API.Interfaces;
 using WhatsMS_Broker.Data.Context;
 
@@ -26,18 +27,26 @@ namespace WhatsMS_Broker.API.Services
                 .Any(x => x.Email == loginGeraTokenDTO.Email && x.Password == loginGeraTokenDTO.Senha);
         }
 
-        public string GerarToken(string emailUsuario)
+        public TokenJwtResponse GerarToken(string emailUsuario)
         {
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:keySecret"]);
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            var timeZoneBr = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+
+            var dataAtualBrasilia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneBr);
+            var expireToken = dataAtualBrasilia.AddHours(Convert.ToDouble(_configuration["Jwt:expireTokenInHours"]));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.Name, emailUsuario)
-            }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                 new Claim(ClaimTypes.Name, emailUsuario)
+                }),
+
+                NotBefore = dataAtualBrasilia,
+                IssuedAt = dataAtualBrasilia,
+                Expires = expireToken,
                 Issuer = _configuration["Jwt:issuer"],
                 Audience = _configuration["Jwt:audience"],
                 SigningCredentials = new SigningCredentials(
@@ -46,7 +55,10 @@ namespace WhatsMS_Broker.API.Services
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var retToken = tokenHandler.WriteToken(token);
+
+            return new TokenJwtResponse(retToken, expireToken.ToString());
         }
+
     }
 }
