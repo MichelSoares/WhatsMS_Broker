@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WhatsMS_Broker.Application\WhatsMS_Broker.Application.csproj" />
     <ProjectReference Include="..\WhatsMS_Broker.Data\WhatsMS_Broker.Data.csproj" />
   </ItemGroup>
 
