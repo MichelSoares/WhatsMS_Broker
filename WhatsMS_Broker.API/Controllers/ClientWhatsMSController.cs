@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatsMS_Broker.API.DTOs.Request;
-using WhatsMS_Broker.API.Interfaces;
-using WhatsMS_Broker.API.Services;
+using WhatsMS_Broker.Application.Interfaces;
 using WhatsMS_Broker.Data.Context;
 
 namespace WhatsMS_Broker.API.Controllers
@@ -64,17 +63,17 @@ namespace WhatsMS_Broker.API.Controllers
 
         }
 
-        [HttpPut]
-        [Authorize]
-        [Route("{phoneNumber}/qrcode")]
-        public async Task<IActionResult> SetNewQRCode(string phoneNumber, [FromBody] UpdateQRCodeDTO updateQRCodeDTO)
-        {
-            if (updateQRCodeDTO == null)
-                return BadRequest("Informe os dados do client Node!");
+        //[HttpPut]
+        //[Authorize]
+        //[Route("{phoneNumber}/qrcode")]
+        //public async Task<IActionResult> SetNewQRCode(string phoneNumber, [FromBody] UpdateQRCodeDTO updateQRCodeDTO)
+        //{
+        //    if (updateQRCodeDTO == null)
+        //        return BadRequest("Informe os dados do client Node!");
 
-            await _clientWhatsMSService.NewInstanceClientNodeAsync(phoneNumber, updateQRCodeDTO);
-            return Ok("Dados atualizados com sucesso.");
-        }
+        //    await _clientWhatsMSService.NewInstanceClientNodeAsync(phoneNumber, updateQRCodeDTO);
+        //    return Ok("Dados atualizados com sucesso.");
+        //}
 
         [HttpPut]
         [Authorize]

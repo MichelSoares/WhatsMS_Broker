@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WhatsMS_Broker.API.DTOs.Request;
-using WhatsMS_Broker.API.DTOs.Response;
-using WhatsMS_Broker.API.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WhatsMS_Broker.Application.DTOs.Responses;
+using WhatsMS_Broker.Application.Interfaces;
 using WhatsMS_Broker.Data.Context;
-using WhatsMS_Broker.Domain.Entidades;
 
-namespace WhatsMS_Broker.API.Services
+namespace WhatsMS_Broker.Application.Services
 {
     public class ClientWhatsMSService : IClientWhatsMSService
     {
@@ -18,7 +21,7 @@ namespace WhatsMS_Broker.API.Services
 
         public async Task<AccountMSStatusResponse?> CheckStatusByPhoneNumberAsync(string phoneNumber)
         {
-            return 
+            return
                 await _brokerDbContext.Accounts.Where(a => a.PhoneNumber == phoneNumber)
                 .Select(a => new AccountMSStatusResponse
                 {
@@ -41,20 +44,20 @@ namespace WhatsMS_Broker.API.Services
             return await _brokerDbContext.Accounts.AnyAsync(a => a.PhoneNumber == phoneNumber && a.UpdatedAt > DateTime.UtcNow.AddMinutes(-1));
         }
 
-        public async Task NewInstanceClientNodeAsync(string phoneNumber, UpdateQRCodeDTO newInstanceNode)
-        {
-            var account = await _brokerDbContext.Accounts
-                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
+        //public async Task NewInstanceClientNodeAsync(string phoneNumber, UpdateQRCodeDTO newInstanceNode)
+        //{
+        //    var account = await _brokerDbContext.Accounts
+        //        .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
 
-            if (account == null)
-                throw new Exception("Telefone não encontrado.");
+        //    if (account == null)
+        //        throw new Exception("Telefone não encontrado.");
 
-            account.QrCodeBase64 = newInstanceNode.QRCode;
-            account.PortRun = newInstanceNode.Port;
-            account.UpdatedAt = DateTime.UtcNow;
+        //    account.QrCodeBase64 = newInstanceNode.QRCode;
+        //    account.PortRun = newInstanceNode.Port;
+        //    account.UpdatedAt = DateTime.UtcNow;
 
-            await _brokerDbContext.SaveChangesAsync();
-        }
+        //    await _brokerDbContext.SaveChangesAsync();
+        //}
 
         public async Task ResetQRCodeAsync(string phoneNumber)
         {
